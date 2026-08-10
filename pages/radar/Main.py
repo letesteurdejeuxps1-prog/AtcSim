@@ -2,7 +2,6 @@ import pathlib
 import pygame
 
 from pages.Variables import Variables
-from pages.radar.InputHandler import InputHandler
 from pages.radar.data.AircraftHandler import AircraftHandler
 from pages.radar.data.Airspace import Airspace
 from pages.radar.view.Camera import Camera
