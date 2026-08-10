@@ -10,7 +10,7 @@ def split_lat_long_to_single_coordinate(data: str) -> list:
     return return_data
 
 
-def separate_axis_from_coord(coord: str) -> tuple['str', 'str']:
+def separate_axis_from_coord(coord: str) -> tuple[str, str]:
     if coord.endswith('N'):
         coord = coord.removesuffix('N')
         direction = 'N'
@@ -39,13 +39,13 @@ def extract_deg_min_sec_from_str(coord: str) -> tuple[int, int, int]:
     degree = int(first_split[0])
     if second_split[0] != '':
         minutes = int(second_split[0])
-        if minutes > 60:
-            raise ValueError(f"Invalid value for seconds, got {minutes}")
+        if minutes >= 60:
+            raise ValueError(f"Invalid value for minutes, got {minutes}")
     else:
         minutes = 0
     if len(second_split) == 2 and second_split[1] != '':
         seconds = int(second_split[1].removesuffix("''"))
-        if seconds > 60:
+        if seconds >= 60:
             raise ValueError(f"Invalid value for seconds, got {seconds}")
     else:
         seconds = 0

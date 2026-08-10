@@ -21,7 +21,7 @@ class Main:
         self.root_directory = working_dir
         self.path_root = str(pathlib.Path().resolve())
         # General variables
-        self.path_airspace_file: str = 'horn.json'
+        self.path_airspace_file: str = 'ESSH.json'
         self.path_airspace_folder: str = 'airspaces'
 
         # Init PyGame and other stuff
@@ -37,7 +37,8 @@ class Main:
         # Init objects
         self.airspace = Airspace()
         self.aircraft_handler = AircraftHandler()
-        self.screen = Screen()
+        self.camera = Camera()
+        self.screen = Screen(self.main_surface, self.root_directory, self.camera)
         self.input_handler = InputHandler()
 
         # Init function
@@ -57,10 +58,14 @@ class Main:
 
     def run(self):
         while self.is_running:
+            self.screen.fill_bg()
             for event in pygame.event.get():
                 self.handle_event(event)
             self.aircraft_handler.update()
-            self.screen.update()
+            self.screen.update(
+                self.airspace,
+                self.aircraft_handler
+            )
             pygame.display.flip()
             self.main_clock.tick(self.variables.display_fps)
 
@@ -78,4 +83,22 @@ class Main:
         # Quit event
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             self.is_running = False
+        elif event.type == pygame.MOUSEWHEEL:
+            self.handle_event_scroll(event)
+
+    def handle_event_scroll(self, event):
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        world_x = (mouse_x + self.camera.cam_offset_x) / self.camera.zoom
+        world_y = -(mouse_y + self.camera.cam_offset_y) / self.camera.zoom
+
+        zoom_factor = 1.1 if event.y > 0 else 0.9
+
+        self.camera.zoom *= zoom_factor
+
+        self.camera.zoom = max(0.1, min(self.camera.zoom, 500))
+
+        self.camera.cam_offset_x = world_x * self.camera.zoom - mouse_x
+        self.camera.cam_offset_y = -world_y * self.camera.zoom - mouse_y
 
