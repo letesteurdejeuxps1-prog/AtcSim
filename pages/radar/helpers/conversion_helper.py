@@ -1,0 +1,99 @@
+import math
+
+def split_lat_long_to_single_coordinate(data: str) -> list:
+    if '|' in data:
+        return_data = data.split('|')
+    else:
+        return_data = [data]
+    if len(return_data) > 2:
+        raise ValueError(f"Too many info passed to get_single_coordinates: {data}")
+    return return_data
+
+
+def separate_axis_from_coord(coord: str) -> tuple['str', 'str']:
+    if coord.endswith('N'):
+        coord = coord.removesuffix('N')
+        direction = 'N'
+    elif coord.endswith('S'):
+        coord = coord.removesuffix('S')
+        direction = 'S'
+    elif coord.endswith('W'):
+        coord = coord.removesuffix('W')
+        direction = 'W'
+    elif coord.endswith('E'):
+        coord = coord.removesuffix('E')
+        direction = 'E'
+    else:
+        raise ValueError(f"Missing direction in {coord}")
+    return coord, direction
+
+
+def extract_deg_min_sec_from_str(coord: str) -> tuple[int, int, int]:
+    coord = coord.replace("Â", "")
+    if '°' in coord:
+        first_split = coord.split('°')
+    else:
+        raise ValueError(f"Unable to convert {coord}")
+
+    second_split = first_split[-1].split("'")
+    degree = int(first_split[0])
+    if second_split[0] != '':
+        minutes = int(second_split[0])
+        if minutes > 60:
+            raise ValueError(f"Invalid value for seconds, got {minutes}")
+    else:
+        minutes = 0
+    if len(second_split) == 2 and second_split[1] != '':
+        seconds = int(second_split[1].removesuffix("''"))
+        if seconds > 60:
+            raise ValueError(f"Invalid value for seconds, got {seconds}")
+    else:
+        seconds = 0
+
+    return degree, minutes, seconds
+
+
+def convert_deg_min_sec_to_sim(data: tuple[int, int, int], axis: str):
+    value = data[0] + data[1] / 60 + data[2] / 3600
+    if axis == 'W' or axis == 'S':
+        value *= -1
+    return value
+
+
+def convert_lat_and_long_to_radar(data: str) -> tuple[float, float]:
+    lat = None
+    lon = None
+
+    coordinates = split_lat_long_to_single_coordinate(data)
+
+    for coord in coordinates:
+        coord_val, direction = separate_axis_from_coord(coord)
+        deg_min_sec = extract_deg_min_sec_from_str(coord_val)
+        value = convert_deg_min_sec_to_sim(deg_min_sec, direction)
+
+        if direction in ('N', 'S'):
+            lat = value
+        elif direction in ('E', 'W'):
+            lon = value
+
+    if lat is None or lon is None:
+        raise ValueError("Missing lat or lon")
+
+    return lon, lat
+
+
+def lat_long_to_local(lat, lon, origin_lat, origin_lon):
+    # Converts geographic coordinates to local NM coordinates
+    x = (lon - origin_lon) * 60 * math.cos(math.radians(origin_lat))
+    y = (lat - origin_lat) * 60
+    return x, y
+
+
+def world_to_screen_x(pos, offset, zoom):
+    # Only use during rendering
+    return (pos * zoom) - offset
+
+
+def world_to_screen_y(pos, offset, zoom):
+    # Only use during rendering
+    return (-pos * zoom) - offset

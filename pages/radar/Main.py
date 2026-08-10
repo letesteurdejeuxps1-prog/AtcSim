@@ -20,6 +20,9 @@ class Main:
         self.is_running = True
         self.root_directory = working_dir
         self.path_root = str(pathlib.Path().resolve())
+        # General variables
+        self.path_airspace_file: str = 'horn.json'
+        self.path_airspace_folder: str = 'airspaces'
 
         # Init PyGame and other stuff
         pygame.init()
@@ -64,7 +67,12 @@ class Main:
         pygame.quit()
 
     def load_airspace(self):
-        pass
+        airspace_file_path = "{}\\{}\\{}".format(
+            self.path_root,
+            self.path_airspace_folder,
+            self.path_airspace_file
+        )
+        self.airspace.load(airspace_file_path)
 
     def handle_event(self, event: pygame.event.Event):
         # Quit event
