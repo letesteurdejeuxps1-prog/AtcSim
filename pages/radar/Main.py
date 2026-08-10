@@ -23,6 +23,11 @@ class Main:
         self.path_airspace_file: str = 'ESSH.json'
         self.path_airspace_folder: str = 'airspaces'
 
+        # click variables
+        self.left_click_on = False
+        self.right_click_on = False
+        self.middle_click_on = False
+
         # Init PyGame and other stuff
         pygame.init()
         pygame.mixer.init()
@@ -38,7 +43,6 @@ class Main:
         self.aircraft_handler = AircraftHandler()
         self.camera = Camera()
         self.screen = Screen(self.main_surface, self.root_directory, self.camera)
-        self.input_handler = InputHandler()
 
         # Init function
         self.init()
@@ -78,14 +82,25 @@ class Main:
         )
         self.airspace.load(airspace_file_path)
 
+    """
+    EVENTS HANDLING
+    """
+
     def handle_event(self, event: pygame.event.Event):
         # Quit event
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             self.is_running = False
+        # MOUSEWHEEL SCROLL
         elif event.type == pygame.MOUSEWHEEL:
             self.handle_event_scroll(event)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            self.handle_event_mouseclick(event)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.handle_event_mouseclick_off()
+        elif event.type == pygame.MOUSEMOTION:
+            self.handle_mouse_motion(event)
 
-    def handle_event_scroll(self, event):
+    def handle_event_scroll(self, event: pygame.event.Event):
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -101,3 +116,28 @@ class Main:
         self.camera.cam_offset_x = world_x * self.camera.zoom - mouse_x
         self.camera.cam_offset_y = -world_y * self.camera.zoom - mouse_y
 
+    def handle_event_mouseclick(self, event: pygame.event.Event):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if event.button == 1:
+            # Left click
+            self.left_click_on = True
+        if event.button == 2:
+            # Middle click
+            self.middle_click_on = True
+        if event.button == 3:
+            # Right click
+            self.right_click_on = True
+
+    def handle_event_mouseclick_off(self):
+        self.left_click_on = False
+        self.middle_click_on = False
+        self.right_click_on = False
+
+    def handle_mouse_motion(self, event):
+        if self.middle_click_on or self.right_click_on:
+            self.handle_event_mouse_middle_click_drag(event)
+
+    def handle_event_mouse_middle_click_drag(self, event):
+        if isinstance(event.rel, tuple) and len(event.rel) == 2:
+            self.camera.cam_offset_x -= event.rel[0]
+            self.camera.cam_offset_y -= event.rel[1]
