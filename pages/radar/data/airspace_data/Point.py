@@ -1,8 +1,9 @@
 import pygame
+from pygame import Surface
 
 
 class Point:
-    pygame_img = None
+    pygame_img: Surface = None
     icon_size = (30, 30)
     default_icon: str = 'UNKNOWN'
 

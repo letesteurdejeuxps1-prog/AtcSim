@@ -94,6 +94,7 @@ class Drawer:
             txt_surface = self.font.render(txt, True, color)
             txt_rect = txt_surface.get_rect()
             txt_rect.centerx = pos_x
-            txt_rect.top = pos_y + point.pygame_img.get_height() // 2 + self.label_offset_y
+            if isinstance(point.pygame_img, pygame.Surface):
+                txt_rect.top = pos_y + point.pygame_img.get_height() // 2 + self.label_offset_y
 
             self.surface.blit(txt_surface, txt_rect)

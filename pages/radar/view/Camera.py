@@ -1,6 +1,3 @@
-from pages.radar.helpers.conversion_helper import world_to_screen_x
-
-
 class Camera:
 
     def __init__(self):
