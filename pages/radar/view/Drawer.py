@@ -1,5 +1,6 @@
 import pygame
 
+from pages.radar.data.aircraft_data.Aircraft import Aircraft
 from pages.radar.data.airspace_data.Point import Point
 from pages.radar.helpers.conversion_helper import world_to_screen_x, world_to_screen_y
 from pages.radar.view.Camera import Camera
@@ -44,6 +45,27 @@ class Drawer:
             width
         )
 
+    def draw_rect_centered(
+            self,
+            pos_x: int | float,
+            pos_y: int | float,
+            width: int | float,
+            height: int | float,
+            color: tuple[int, int, int],
+            border: int = 1
+    ):
+        start_x = int(world_to_screen_x(pos_x, self.camera.cam_offset_x, self.camera.zoom))
+        start_y = int(world_to_screen_y(pos_y, self.camera.cam_offset_y, self.camera.zoom))
+
+        rect = pygame.Rect(0, 0, width, height)
+        rect.center = start_x, start_y
+        pygame.draw.rect(
+            self.surface,
+            color,
+            rect,
+            border
+        )
+
     def draw_area(self, coords):
 
         if len(coords) < 2:
@@ -64,6 +86,16 @@ class Drawer:
             coords[0][0],
             coords[0][1],
             (155, 155, 155)
+        )
+
+    def draw_acft(self, acft: Aircraft):
+
+        self.draw_rect_centered(
+            acft.pos_x,
+            acft.pos_y,
+            acft.body_width,
+            acft.body_height,
+            acft.color_body
         )
 
     def draw_icon(self, point: Point, should_display_name: bool = False):

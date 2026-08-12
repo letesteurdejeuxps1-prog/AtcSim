@@ -1,6 +1,6 @@
 import pygame
 
-from pages.radar.data.AircraftHandler import AircraftHandler
+from pages.radar.data.aircraft_data.AircraftHandler import AircraftHandler
 from pages.radar.data.Airspace import Airspace
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Drawer import Drawer
@@ -23,7 +23,7 @@ class Screen:
     def update(self, asp: Airspace, acft_handler: AircraftHandler):
         self.draw_airspace(asp)
         self.draw_aerodromes()
-        self.draw_acft()
+        self.draw_acft(acft_handler)
         self.draw_qdm()
 
     def fill_bg(self):
@@ -39,8 +39,9 @@ class Screen:
     def draw_aerodromes(self):
         pass
 
-    def draw_acft(self):
-        pass
+    def draw_acft(self, acft_handler: AircraftHandler):
+        for acft in acft_handler.aircraft_list:
+            self.drawer.draw_acft(acft)
 
     def draw_qdm(self):
         pass

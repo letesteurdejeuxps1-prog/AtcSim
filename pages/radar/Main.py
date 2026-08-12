@@ -3,8 +3,9 @@ import pygame
 
 from pages.Variables import Variables
 from pages.radar.EventHandler import EventHandler
-from pages.radar.data.AircraftHandler import AircraftHandler
+from pages.radar.data.aircraft_data.AircraftHandler import AircraftHandler
 from pages.radar.data.Airspace import Airspace
+from pages.radar.helpers.Test import Test
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Screen import Screen
 
@@ -44,6 +45,8 @@ class Main:
         self.airspace = Airspace()
         self.aircraft_handler = AircraftHandler()
         self.camera = Camera()
+        # TODO Remove next line after debug
+        self.testing_object = Test()
         self.screen = Screen(self.main_surface, self.root_directory, self.camera)
 
         # Init function
@@ -51,7 +54,8 @@ class Main:
 
     def test_init(self):
         # TODO: REMOVE FUNCTION AFTER DEBUG
-        pass
+        acfts = self.testing_object.load_acft(self.root_directory, self.airspace.origin_lon, self.airspace.origin_lat)
+        self.aircraft_handler.testing_populate_list(acfts)
 
     def init(self):
         pygame.display.set_caption(self.variables.game_caption)
