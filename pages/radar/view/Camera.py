@@ -9,5 +9,6 @@ class Camera:
         self.zoom = 10
 
     def set_center(self, screen_width, screen_height):
-        pass
+        self.cam_offset_x = -screen_width / 2
+        self.cam_offset_y = -screen_height / 2
 
