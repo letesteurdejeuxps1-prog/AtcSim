@@ -11,8 +11,8 @@ class Point:
             name: str,
             abbreviation: str,
             type_of_point: str,
-            lat: str,
-            long: str,
+            lat: int | float,
+            long: int | float,
             pos_x: int | float = 0,
             pos_y: int | float = 0,
     ):

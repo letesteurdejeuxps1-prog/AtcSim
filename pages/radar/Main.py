@@ -58,6 +58,10 @@ class Main:
         self.variables.display_width_half = self.variables.display_width // 2
         self.variables.display_height_half = self.variables.display_height // 2
         self.load_airspace()
+        self.camera.set_center(
+            self.variables.display_width,
+            self.variables.display_height
+        )
         # TODO: REMOVE NEXT LINE AFTER DEBUG
         self.test_init()
 

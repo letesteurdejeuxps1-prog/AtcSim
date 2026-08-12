@@ -11,6 +11,7 @@ class Screen:
     radar_color_bg: tuple[int, int, int] = (0, 0, 0)
 
     def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera):
+        self.radar_show_navaids_name = True
         self.surface = surface
         self.root_directory = root_directory
         self.camera = camera
@@ -24,7 +25,6 @@ class Screen:
         self.draw_aerodromes()
         self.draw_acft()
         self.draw_qdm()
-        pygame.display.flip()
 
     def fill_bg(self):
         self.surface.fill(self.radar_color_bg)
@@ -32,6 +32,9 @@ class Screen:
     def draw_airspace(self, asp: Airspace):
         for area in asp.areas:
             self.drawer.draw_area(area.coordinates_converted)
+        
+        for point in asp.points:
+            self.drawer.draw_icon(point, True)
 
     def draw_aerodromes(self):
         pass

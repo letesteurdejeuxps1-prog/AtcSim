@@ -85,6 +85,8 @@ class Airspace:
                 point_name,
                 pt.get("ABBR"),
                 pt.get("TYPE"),
+                lat,
+                lon,
                 x,
                 y
             )
