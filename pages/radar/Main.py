@@ -74,13 +74,16 @@ class Main:
             self.screen.fill_bg()
             for event in pygame.event.get():
                 self.event_handler.handle_event(event)
-            self.aircraft_handler.update()
+
+            elapsed_time = self.main_clock.tick(self.variables.display_fps)
+
+            self.aircraft_handler.update(elapsed_time)
             self.screen.update(
                 self.airspace,
                 self.aircraft_handler
             )
             pygame.display.flip()
-            self.main_clock.tick(self.variables.display_fps)
+
 
         pygame.quit()
 
