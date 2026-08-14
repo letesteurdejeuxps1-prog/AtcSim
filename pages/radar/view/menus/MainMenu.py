@@ -5,7 +5,6 @@ from pages.radar.view.menus.GenericButton import GenericButton
 
 
 class MainMenu:
-
     max_height = 150
 
     def __init__(self, width: int):
@@ -25,9 +24,9 @@ class MainMenu:
         self.bg_color = (50, 50, 50)
         self.margin_bottom_color = (255, 255, 255)
 
-
         # Content
         self.button_list = []
+        # TODO : Change following function between populate_button_list_display_flex or populate_button_list to set the menu layout
         self.populate_button_list()
 
         # Object
@@ -38,35 +37,77 @@ class MainMenu:
             self.height
         )
 
-
     def populate_button_list(self):
         button_height = self.height - self.padding_top - self.padding_bottom
         button_x_pos = self.padding_left
         button_y_pos = self.padding_top
 
-        #Main menu button 1
-        test_button = GenericButton(
-            button_x_pos,
-            button_y_pos,
-            "Test",
-            150,
-            button_height,
-            self.test_button_action_1
+        self.button_list = []
+
+        for txt, button_class, width, action in self.get_buttons_list():
+            button = button_class(
+                button_x_pos,
+                button_y_pos,
+                txt,
+                width,
+                button_height,
+                action
+            )
+
+            self.button_list.append(button)
+
+            button_x_pos += button.width + self.padding_right
+
+    def populate_button_list_display_flex(self):
+        button_height = self.height - self.padding_top - self.padding_bottom
+
+        button_definitions = self.get_buttons_list()
+
+        self.button_list = []
+
+        # Create the actual button objects
+        for txt, button_class, width, action in button_definitions:
+            button = button_class(
+                0,
+                self.padding_top,
+                txt,
+                width,
+                button_height,
+                action
+            )
+
+            self.button_list.append(button)
+
+        # Calculate total width occupied by buttons
+        total_button_width = sum(
+            button.width
+            for button in self.button_list
         )
-        self.button_list.append(test_button)
 
-        button_x_pos += test_button.width + self.padding_right
-        test_button = ClickableButton(
-            button_x_pos,
-            button_y_pos,
-            "Test 2",
-            150,
-            button_height,
-            self.test_button_action_2
+        # Remaining space available for gaps
+        available_width = (
+                self.width
+                - self.padding_left
+                - self.padding_right
+                - total_button_width
         )
-        self.button_list.append(test_button)
 
+        # Number of gaps between buttons
+        number_of_gaps = len(self.button_list) - 1
 
+        if number_of_gaps > 0:
+            spacing = available_width / number_of_gaps
+        else:
+            spacing = 0
+
+        # Position buttons
+        x = self.padding_left
+
+        for button in self.button_list:
+            button.pos_x = int(x)
+            button.rect.x = button.pos_x
+
+            x += button.width + spacing
 
     def update_mouse(self, mouse_pos: tuple[int, int]):
         for button in self.button_list:
@@ -81,6 +122,22 @@ class MainMenu:
             button.mouse_up(mouse_pos)
 
     # Button actions
+    def get_buttons_list(self):
+        return [
+            (
+                "Test",
+                GenericButton,
+                150,
+                self.test_button_action_1
+            ),
+            (
+                "Test 2",
+                ClickableButton,
+                200,
+                self.test_button_action_2
+            ),
+        ]
+
     def test_button_action_1(self):
         self.bg_color = (255, 50, 50)
 
