@@ -48,12 +48,20 @@ class Aircraft:
 
         self.route = ""
 
+        # Draw values
+        self.prl_length_in_sec = 60
+        initial_prl_data = self.update_prl_data()
+        self.prl_end_x = initial_prl_data[0]
+        self.prl_end_y = initial_prl_data[1]
+
+
     def update_acft(self, elapsed_time_ms: int):
         elapsed_time = elapsed_time_ms / 1000
         self.update_speed()
         self.update_level()
         self.update_heading()
         self.move(elapsed_time)
+        self.prl_end_x, self.prl_end_y = self.update_prl_data()
 
     def update_speed(self):
         # TODO Calc GS
@@ -66,14 +74,13 @@ class Aircraft:
         pass
 
     def move(self, elapsed_time: int | float):
-        next_x, next_y = self.next_pos(
-            get_rad_angle(self.heading_act),
-            elapsed_time
-        )
+        next_x, next_y = self.next_pos(elapsed_time)
         self.pos_x = next_x
         self.pos_y = next_y
 
-    def next_pos(self, r_angle, amount_of_sec):
+    def next_pos(self, amount_of_sec):
+
+        r_angle = get_rad_angle(self.heading_act)
 
         next_x = (
             self.pos_x
@@ -90,6 +97,9 @@ class Aircraft:
         )
 
         return next_x, next_y
+
+    def update_prl_data(self):
+        return self.next_pos(self.prl_length_in_sec)
 
     def get_gs_speed_per_sec(self) -> float:
         return self.gs / 3600

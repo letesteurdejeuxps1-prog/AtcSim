@@ -90,12 +90,22 @@ class Drawer:
 
     def draw_acft(self, acft: Aircraft):
 
+        # Acft body
         self.draw_rect_centered(
             acft.pos_x,
             acft.pos_y,
             acft.body_width,
             acft.body_height,
             acft.color_body
+        )
+
+        # Acft PRL
+        self.draw_line(
+            acft.pos_x,
+            acft.pos_y,
+            acft.prl_end_x,
+            acft.prl_end_y,
+            acft.color_prl
         )
 
     def draw_icon(self, point: Point, should_display_name: bool = False):
