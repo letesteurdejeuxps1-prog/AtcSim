@@ -1,3 +1,4 @@
+from pages.radar.data.aircraft_data.Label import Label
 from pages.radar.helpers.math_helper import get_cos_angle, get_rad_angle, get_sin_angle
 
 
@@ -53,6 +54,7 @@ class Aircraft:
         initial_prl_data = self.update_prl_data()
         self.prl_end_x = initial_prl_data[0]
         self.prl_end_y = initial_prl_data[1]
+        self.label = Label()
 
 
     def update_acft(self, elapsed_time_ms: int):
