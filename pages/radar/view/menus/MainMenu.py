@@ -1,5 +1,6 @@
 import pygame
 
+from pages.radar.view.menus.ClickableButton import ClickableButton
 from pages.radar.view.menus.GenericButton import GenericButton
 
 
@@ -43,13 +44,48 @@ class MainMenu:
         button_x_pos = self.padding_left
         button_y_pos = self.padding_top
 
-        #Main menu button
-        test_button = GenericButton(button_x_pos, button_y_pos, "Test", 100, button_height)
+        #Main menu button 1
+        test_button = GenericButton(
+            button_x_pos,
+            button_y_pos,
+            "Test",
+            150,
+            button_height,
+            self.test_button_action_1
+        )
         self.button_list.append(test_button)
-        button_x_pos += test_button.width + self.padding_right
 
-        # TODO remove after DEBUG
-        for i in range(4):
-            test_btn = GenericButton(button_x_pos, button_y_pos, "Test {}".format(i), 100, button_height)
-            button_x_pos += test_btn.width + self.padding_right
-            self.button_list.append(test_btn)
+        button_x_pos += test_button.width + self.padding_right
+        test_button = ClickableButton(
+            button_x_pos,
+            button_y_pos,
+            "Test 2",
+            150,
+            button_height,
+            self.test_button_action_2
+        )
+        self.button_list.append(test_button)
+
+
+
+    def update_mouse(self, mouse_pos: tuple[int, int]):
+        for button in self.button_list:
+            button.update_hover(mouse_pos)
+
+    def mouse_down(self, mouse_pos: tuple[int, int]):
+        for button in self.button_list:
+            button.mouse_down(mouse_pos)
+
+    def mouse_up(self, mouse_pos: tuple[int, int]):
+        for button in self.button_list:
+            button.mouse_up(mouse_pos)
+
+    # Button actions
+    def test_button_action_1(self):
+        self.bg_color = (255, 50, 50)
+
+    def test_button_action_2(self):
+        if self.bg_color == (50, 50, 50):
+            self.bg_color = (100, 100, 100)
+        else:
+            self.bg_color = (50, 50, 50)

@@ -42,22 +42,27 @@ class EventHandler:
         self.parent.camera.cam_offset_y = -world_y * self.parent.camera.zoom - mouse_y
 
     def handle_event_mouseclick(self, event: pygame.event.Event):
+        mouse_pos = pygame.mouse.get_pos()
         if event.button == 1:
-            # Left click
             self.parent.left_click_on = True
-        if event.button == 2:
-            # Middle click
+            self.parent.screen.main_menu.mouse_down(mouse_pos)
+
+        elif event.button == 2:
             self.parent.middle_click_on = True
-        if event.button == 3:
-            # Right click
+
+        elif event.button == 3:
             self.parent.right_click_on = True
 
     def handle_event_mouseclick_off(self):
+        mouse_pos = pygame.mouse.get_pos()
+        self.parent.screen.main_menu.mouse_up(mouse_pos)
         self.parent.left_click_on = False
         self.parent.middle_click_on = False
         self.parent.right_click_on = False
 
     def handle_mouse_motion(self, event):
+        mouse_pos = event.pos
+        self.parent.screen.main_menu.update_mouse(mouse_pos)
         if self.parent.middle_click_on or self.parent.right_click_on:
             self.handle_event_mouse_middle_click_drag(event)
 
@@ -65,3 +70,4 @@ class EventHandler:
         if isinstance(event.rel, tuple) and len(event.rel) == 2:
             self.parent.camera.cam_offset_x -= event.rel[0]
             self.parent.camera.cam_offset_y -= event.rel[1]
+

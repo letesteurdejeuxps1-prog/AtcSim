@@ -165,8 +165,8 @@ class Drawer:
 
     def draw_menu_button(self, button: GenericButton):
         # Draw BG
-        self.draw_fixed_rect_from_rect(button.rect, button.bg_color)
-        self.draw_fixed_rect_from_rect(button.rect, button.margin_color, 3)
+        self.draw_fixed_rect_from_rect(button.rect, button.get_bg_color())
+        self.draw_fixed_rect_from_rect(button.rect, button.get_margin_color(), 3)
 
         # Draw text
         text_surface = self.font.render(
