@@ -24,6 +24,7 @@ class Main:
         # General variables
         self.path_airspace_file: str = 'ESSH.json'
         self.path_airspace_folder: str = 'airspaces'
+        self.radar_refresh_rate_ticker = 0
 
         # click variables
         self.left_click_on = False
@@ -75,15 +76,16 @@ class Main:
             for event in pygame.event.get():
                 self.event_handler.handle_event(event)
 
-            elapsed_time = self.main_clock.tick(self.variables.display_fps)
+            radar_elapsed_time = self.get_radar_update_elapsed_time()
+            self.aircraft_handler.update(radar_elapsed_time)
 
-            self.aircraft_handler.update(elapsed_time)
             self.screen.update(
                 self.airspace,
                 self.aircraft_handler
             )
             pygame.display.flip()
 
+            self.main_clock.tick(self.variables.display_fps)
 
         pygame.quit()
 
@@ -95,3 +97,11 @@ class Main:
         )
         self.airspace.load(airspace_file_path)
 
+    def get_radar_update_elapsed_time(self):
+        self.radar_refresh_rate_ticker += self.main_clock.get_time()
+        if self.radar_refresh_rate_ticker >= self.variables.radar_refresh_rate_in_ms:
+            elapsed_time = self.radar_refresh_rate_ticker
+            self.radar_refresh_rate_ticker = self.radar_refresh_rate_ticker - self.variables.radar_refresh_rate_in_ms
+            return elapsed_time
+        else:
+            return None

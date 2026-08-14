@@ -6,3 +6,5 @@ class Variables:
     display_fps: int = 60
 
     game_caption: str = 'Radar'
+
+    radar_refresh_rate_in_ms: int = 3000
