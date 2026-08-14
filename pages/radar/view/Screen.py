@@ -1,22 +1,26 @@
 import pygame
 
+from pages.Variables import Variables
 from pages.radar.data.aircraft_data.AircraftHandler import AircraftHandler
 from pages.radar.data.Airspace import Airspace
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Drawer import Drawer
+from pages.radar.view.menus.MainMenu import MainMenu
 
 
 class Screen:
 
     radar_color_bg: tuple[int, int, int] = (0, 0, 0)
 
-    def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera):
+    def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera, variables: Variables):
         self.radar_show_navaids_name = True
         self.surface = surface
+        self.variables = variables
         self.root_directory = root_directory
         self.camera = camera
         self.zoom = 1
         self.drawer = Drawer(self.surface, self.root_directory, self.camera)
+        self.main_menu = MainMenu(self.variables.display_width)
         self.cam_offset_x = 0
         self.cam_offset_y = 0
 
@@ -25,6 +29,7 @@ class Screen:
         self.draw_aerodromes()
         self.draw_acft(acft_handler)
         self.draw_qdm()
+        self.draw_menus()
 
     def fill_bg(self):
         self.surface.fill(self.radar_color_bg)
@@ -45,4 +50,10 @@ class Screen:
 
     def draw_qdm(self):
         pass
+
+    def draw_menus(self):
+        self.draw_main_menu()
+
+    def draw_main_menu(self):
+        self.drawer.draw_main_menu(self.main_menu)
 

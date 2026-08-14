@@ -4,6 +4,8 @@ from pages.radar.data.aircraft_data.Aircraft import Aircraft
 from pages.radar.data.airspace_data.Point import Point
 from pages.radar.helpers.conversion_helper import world_to_screen_x, world_to_screen_y
 from pages.radar.view.Camera import Camera
+from pages.radar.view.menus.GenericButton import GenericButton
+from pages.radar.view.menus.MainMenu import MainMenu
 
 
 class Drawer:
@@ -15,7 +17,6 @@ class Drawer:
     font_size: int = 14
 
     label_offset_y = 2
-
 
     def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera):
         self.surface = surface
@@ -64,6 +65,19 @@ class Drawer:
             color,
             rect,
             border
+        )
+
+    def draw_fixed_rect_from_rect(
+            self,
+            rect: pygame.Rect,
+            color: tuple[int, int, int],
+            border_width = 0
+    ):
+        pygame.draw.rect(
+            self.surface,
+            color,
+            rect,
+            border_width
         )
 
     def draw_area(self, coords):
@@ -140,3 +154,27 @@ class Drawer:
                 txt_rect.top = pos_y + point.pygame_img.get_height() // 2 + self.label_offset_y
 
             self.surface.blit(txt_surface, txt_rect)
+
+    def draw_main_menu(self, main_menu: MainMenu):
+        # Draw BG
+        self.draw_fixed_rect_from_rect(main_menu.rect, main_menu.bg_color)
+
+        # Draw buttons
+        for button in main_menu.button_list:
+            self.draw_menu_button(button)
+
+    def draw_menu_button(self, button: GenericButton):
+        # Draw BG
+        self.draw_fixed_rect_from_rect(button.rect, button.bg_color)
+        self.draw_fixed_rect_from_rect(button.rect, button.margin_color, 3)
+
+        # Draw text
+        text_surface = self.font.render(
+            str(button.txt),
+            True,
+            button.txt_color
+        )
+        mid_x = button.rect.centerx
+        mid_y = button.rect.centery
+        rect = text_surface.get_rect(center=(mid_x, mid_y))
+        self.surface.blit(text_surface, rect)

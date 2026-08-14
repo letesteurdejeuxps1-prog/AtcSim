@@ -48,7 +48,7 @@ class Main:
         self.camera = Camera()
         # TODO Remove next line after debug
         self.testing_object = Test()
-        self.screen = Screen(self.main_surface, self.root_directory, self.camera)
+        self.screen = Screen(self.main_surface, self.root_directory, self.camera, self.variables)
 
         # Init function
         self.init()
