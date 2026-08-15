@@ -39,7 +39,7 @@ class Screen:
             self.drawer.draw_area(area.coordinates_converted)
         
         for point in asp.points:
-            self.drawer.draw_icon(point, True)
+            self.drawer.draw_icon_radar(point, True)
 
     def draw_aerodromes(self):
         pass

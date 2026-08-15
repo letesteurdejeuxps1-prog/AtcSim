@@ -24,7 +24,7 @@ class Drawer:
         self.camera = camera
         self.font = pygame.font.SysFont("consolas", self.font_size)
 
-    def draw_line(
+    def draw_line_radar(
             self,
             start_x: int | float,
             start_y: int | float,
@@ -46,7 +46,24 @@ class Drawer:
             width
         )
 
-    def draw_rect_centered(
+    def draw_line_screen(
+            self,
+            start_x: int,
+            start_y: int,
+            end_x: int,
+            end_y: int,
+            color: tuple[int, int, int],
+            width: int = 1
+    ):
+        pygame.draw.line(
+            self.surface,
+            color,
+            (start_x, start_y),
+            (end_x, end_y),
+            width
+        )
+
+    def draw_rect_centered_radar(
             self,
             pos_x: int | float,
             pos_y: int | float,
@@ -67,7 +84,7 @@ class Drawer:
             border
         )
 
-    def draw_fixed_rect_from_rect(
+    def draw_fixed_rect_from_rect_radar(
             self,
             rect: pygame.Rect,
             color: tuple[int, int, int],
@@ -86,7 +103,7 @@ class Drawer:
             return
 
         for start, end in zip(coords, coords[1:]):
-            self.draw_line(
+            self.draw_line_radar(
                 start[0],
                 start[1],
                 end[0],
@@ -94,7 +111,7 @@ class Drawer:
                 (155, 155, 155)
             )
 
-        self.draw_line(
+        self.draw_line_radar(
             coords[-1][0],
             coords[-1][1],
             coords[0][0],
@@ -105,7 +122,7 @@ class Drawer:
     def draw_acft(self, acft: Aircraft):
 
         # Acft body
-        self.draw_rect_centered(
+        self.draw_rect_centered_radar(
             acft.pos_x,
             acft.pos_y,
             acft.body_width,
@@ -114,7 +131,7 @@ class Drawer:
         )
 
         # Acft PRL
-        self.draw_line(
+        self.draw_line_radar(
             acft.pos_x,
             acft.pos_y,
             acft.prl_end_x,
@@ -131,23 +148,21 @@ class Drawer:
         label.build_label(acft)
         label.update_screen_rect(acft, self.camera)
 
-        label_x, label_y = label.get_world_position(acft)
+        # Aircraft position on screen
+        aircraft_x = int(world_to_screen_x(acft.pos_x, self.camera.cam_offset_x, self.camera.zoom))
+
+        aircraft_y = int(world_to_screen_y( acft.pos_y, self.camera.cam_offset_y, self.camera.zoom))
+
+        # Label connection point
+        connection_x, connection_y = label.get_connection_point(acft, self.camera)
 
         # Leader line
-        self.draw_line(
-            acft.pos_x,
-            acft.pos_y,
-            label_x,
-            label_y,
+        self.draw_line_screen(
+            aircraft_x,
+            aircraft_y,
+            connection_x,
+            connection_y,
             (255, 255, 255),
-            1
-        )
-
-        # DEBUG: show clickable area
-        pygame.draw.rect(
-            self.surface,
-            (255, 0, 0),
-            label.rect,
             1
         )
 
@@ -174,7 +189,7 @@ class Drawer:
 
             y += label.line_height
 
-    def draw_icon(self, point: Point, should_display_name: bool = False):
+    def draw_icon_radar(self, point: Point, should_display_name: bool = False):
         if point.pygame_img is None:
             point.set_image_file(
                 self.root_directory,
@@ -209,7 +224,7 @@ class Drawer:
 
     def draw_main_menu(self, main_menu: MainMenu):
         # Draw BG
-        self.draw_fixed_rect_from_rect(main_menu.rect, main_menu.bg_color)
+        self.draw_fixed_rect_from_rect_radar(main_menu.rect, main_menu.bg_color)
 
         # Draw buttons
         for button in main_menu.button_list:
@@ -217,8 +232,8 @@ class Drawer:
 
     def draw_menu_button(self, button: GenericButton):
         # Draw BG
-        self.draw_fixed_rect_from_rect(button.rect, button.get_bg_color())
-        self.draw_fixed_rect_from_rect(button.rect, button.get_margin_color(), 3)
+        self.draw_fixed_rect_from_rect_radar(button.rect, button.get_bg_color())
+        self.draw_fixed_rect_from_rect_radar(button.rect, button.get_margin_color(), 3)
 
         # Draw text
         text_surface = self.font.render(

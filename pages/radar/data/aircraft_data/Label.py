@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from pages.radar.helpers.conversion_helper import (
@@ -159,3 +161,28 @@ class Label:
 
     def mouse_up(self):
         self.dragging = False
+
+    def get_connection_point(self, aircraft, camera):
+
+        aircraft_x = world_to_screen_x(aircraft.pos_x, camera.cam_offset_x, camera.zoom)
+        aircraft_y = world_to_screen_y(aircraft.pos_y, camera.cam_offset_y, camera.zoom)
+
+        dx = aircraft_x - self.rect.centerx
+        dy = aircraft_y - self.rect.centery
+
+        angle = math.degrees(math.atan2(dy, dx))
+        angle %= 360
+
+        direction = round(angle / 45) % 8
+        points = {
+            0: (self.rect.right,self.rect.centery),
+            1: (self.rect.right, self.rect.bottom),
+            2: (self.rect.centerx, self.rect.bottom),
+            3: (self.rect.left, self.rect.bottom),
+            4: (self.rect.left, self.rect.centery),
+            5: (self.rect.left, self.rect.top),
+            6: (self.rect.centerx, self.rect.top),
+            7: (self.rect.right, self.rect.top),
+        }
+
+        return points[direction]
