@@ -122,6 +122,58 @@ class Drawer:
             acft.color_prl
         )
 
+        self.draw_aircraft_label(acft)
+
+    def draw_aircraft_label(self, acft: Aircraft):
+
+        label = acft.label
+
+        label.build_label(acft)
+        label.update_screen_rect(acft, self.camera)
+
+        label_x, label_y = label.get_world_position(acft)
+
+        # Leader line
+        self.draw_line(
+            acft.pos_x,
+            acft.pos_y,
+            label_x,
+            label_y,
+            (255, 255, 255),
+            1
+        )
+
+        # DEBUG: show clickable area
+        pygame.draw.rect(
+            self.surface,
+            (255, 0, 0),
+            label.rect,
+            1
+        )
+
+        # Draw label
+        y = label.rect.top
+
+        for line in label.lines:
+
+            x = label.rect.left
+
+            for field in line:
+                text_surface = self.font.render(
+                    str(field),
+                    True,
+                    (255, 255, 255)
+                )
+
+                self.surface.blit(
+                    text_surface,
+                    (x, y)
+                )
+
+                x += text_surface.get_width() + label.buffer
+
+            y += label.line_height
+
     def draw_icon(self, point: Point, should_display_name: bool = False):
         if point.pygame_img is None:
             point.set_image_file(
