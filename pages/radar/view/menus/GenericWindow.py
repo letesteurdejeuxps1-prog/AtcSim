@@ -77,6 +77,8 @@ class GenericWindow:
 
         self.button_list: list[GenericButton] = []
 
+        self.content = []
+
     # ==================================================================
     # Position
     # ==================================================================
@@ -306,3 +308,6 @@ class GenericWindow:
             button.mouse_up(mouse_pos)
 
         self.dragging = False
+
+    def add_content(self, content):
+        self.content.append(content)

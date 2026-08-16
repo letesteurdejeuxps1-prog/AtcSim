@@ -115,12 +115,23 @@ class EventHandler:
 
             for aircraft in self.parent.aircraft_handler.aircraft_list:
 
-                if aircraft.label.mouse_down(
+                label = aircraft.label
+
+                field = label.get_field_at(mouse_pos)
+
+                if field is not None:
+                    self.handle_label_field_click(
+                        aircraft,
+                        field
+                    )
+                    return
+
+                if label.mouse_down(
                         mouse_pos,
                         self.parent.camera,
                         aircraft
                 ):
-                    self.dragging_label = aircraft.label
+                    self.dragging_label = label
                     self.dragging_aircraft = aircraft
                     return
 
@@ -224,3 +235,24 @@ class EventHandler:
 
             self.parent.camera.cam_offset_x -= event.rel[0]
             self.parent.camera.cam_offset_y -= event.rel[1]
+
+    def handle_label_field_click(
+            self,
+            aircraft,
+            field_name: str
+    ):
+        if field_name == "act_level":
+            print("# Open altitude window of acft {}".format(aircraft.squawk))
+            pass
+
+        elif field_name == "req_level":
+            print("# Open requested altitude window of acft {}".format(aircraft.squawk))
+            pass
+
+        elif field_name == "ssr":
+            print("# Open squawk window of acft {}".format(aircraft.squawk))
+            pass
+
+        elif field_name == "callsign":
+            print("# Open callsign/aircraft information window of acft {}".format(aircraft.squawk))
+            pass

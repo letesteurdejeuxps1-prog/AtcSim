@@ -145,18 +145,41 @@ class Drawer:
 
         label = acft.label
 
-        label.build_label(acft)
-        label.update_screen_rect(acft, self.camera)
+        label.update_layout(
+            acft,
+            self.camera,
+            self.font
+        )
 
-        # Aircraft position on screen
-        aircraft_x = int(world_to_screen_x(acft.pos_x, self.camera.cam_offset_x, self.camera.zoom))
+        # --------------------------------------------------------------
+        # Aircraft position
+        # --------------------------------------------------------------
 
-        aircraft_y = int(world_to_screen_y( acft.pos_y, self.camera.cam_offset_y, self.camera.zoom))
+        aircraft_x = int(
+            world_to_screen_x(
+                acft.pos_x,
+                self.camera.cam_offset_x,
+                self.camera.zoom
+            )
+        )
 
-        # Label connection point
-        connection_x, connection_y = label.get_connection_point(acft, self.camera)
+        aircraft_y = int(
+            world_to_screen_y(
+                acft.pos_y,
+                self.camera.cam_offset_y,
+                self.camera.zoom
+            )
+        )
 
+        # --------------------------------------------------------------
         # Leader line
+        # --------------------------------------------------------------
+
+        connection_x, connection_y = label.get_connection_point(
+            acft,
+            self.camera
+        )
+
         self.draw_line_screen(
             aircraft_x,
             aircraft_y,
@@ -166,28 +189,25 @@ class Drawer:
             1
         )
 
-        # Draw label
-        y = label.rect.top
+        # --------------------------------------------------------------
+        # Draw fields
+        # --------------------------------------------------------------
 
         for line in label.lines:
 
-            x = label.rect.left
+            for field_name, field_value in line:
+                rect = label.field_rects[field_name]
 
-            for field in line:
                 text_surface = self.font.render(
-                    str(field),
+                    str(field_value),
                     True,
                     (255, 255, 255)
                 )
 
                 self.surface.blit(
                     text_surface,
-                    (x, y)
+                    rect.topleft
                 )
-
-                x += text_surface.get_width() + label.buffer
-
-            y += label.line_height
 
     def draw_icon_radar(self, point: Point, should_display_name: bool = False):
         if point.pygame_img is None:

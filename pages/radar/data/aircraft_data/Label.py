@@ -12,22 +12,32 @@ class Label:
 
     def __init__(self):
 
-        # Position relative to aircraft, in WORLD coordinates
+        # --------------------------------------------------------------
+        # Position relative to aircraft, WORLD coordinates
+        # --------------------------------------------------------------
+
         self.offset_x = 20
         self.offset_y = 20
 
-        # Interaction state
+        # --------------------------------------------------------------
+        # Dragging
+        # --------------------------------------------------------------
+
         self.dragging = False
         self.drag_offset_x = 0
         self.drag_offset_y = 0
 
-        # Label dimensions
-        self.width = 180
-        self.line_height = 16
+        # --------------------------------------------------------------
+        # Display
+        # --------------------------------------------------------------
 
+        self.line_height = 16
         self.buffer = 5
 
+        # --------------------------------------------------------------
         # Data
+        # --------------------------------------------------------------
+
         self.ssr_display = ""
         self.msg_special = ""
         self.msg_app = ""
@@ -45,14 +55,23 @@ class Label:
         self.req_vertical_speed = ""
         self.act_vertical_speed = ""
 
-        # Generated drawing data
+        # --------------------------------------------------------------
+        # Layout
+        # --------------------------------------------------------------
+
         self.lines = []
 
-        # Overall label rectangle in SCREEN coordinates
+        # {
+        #     "field_name": pygame.Rect(...)
+        # }
+        self.field_rects = {}
+
+        # Overall label rectangle
         self.rect = pygame.Rect(0, 0, 0, 0)
 
-        # Individual field rectangles
-        self.field_rects = []
+    # ==================================================================
+    # POSITION
+    # ==================================================================
 
     def get_world_position(self, aircraft):
         return (
@@ -60,37 +79,48 @@ class Label:
             aircraft.pos_y + self.offset_y
         )
 
+    # ==================================================================
+    # BUILD DATA
+    # ==================================================================
+
     def build_label(self, aircraft):
+
         self.lines = [
             [
-                str(aircraft.squawk),
-                self.msg_special,
-                self.msg_app
+                ("ssr", str(aircraft.squawk)),
+                ("msg_special", self.msg_special),
+                ("msg_app", self.msg_app),
             ],
             [
-                self.cs,
-                self.next_sector,
+                ("callsign", self.cs),
+                ("next_sector", self.next_sector),
             ],
             [
-                str(aircraft.altitude_act),
-                self.climb_descend_maintain,
-                str(aircraft.altitude_req),
-                self.next_point
+                ("act_level", str(aircraft.altitude_act)),
+                ("vertical_state", self.climb_descend_maintain),
+                ("req_level", str(aircraft.altitude_req)),
+                ("next_point", self.next_point),
             ],
             [
-                self.pfl,
-                self.tfl,
-                self.ecl,
-                self.copx,
+                ("pfl", self.pfl),
+                ("tfl", self.tfl),
+                ("ecl", self.ecl),
+                ("copx", self.copx),
             ],
             [
-                str(aircraft.gs),
-                str(aircraft.rate_of_climb_req),
-                str(aircraft.rate_of_climb_act)
+                ("gs", str(aircraft.gs)),
+                ("req_vertical_speed", str(aircraft.rate_of_climb_req)),
+                ("act_vertical_speed", str(aircraft.rate_of_climb_act)),
             ]
         ]
 
-    def update_screen_rect(self, aircraft, camera):
+    # ==================================================================
+    # UPDATE LAYOUT
+    # ==================================================================
+
+    def update_layout(self, aircraft, camera, font):
+
+        self.build_label(aircraft)
 
         label_x, label_y = self.get_world_position(aircraft)
 
@@ -110,26 +140,88 @@ class Label:
             )
         )
 
+        self.field_rects.clear()
+
+        current_y = screen_y
+        max_right = screen_x
+
+        for line in self.lines:
+
+            current_x = screen_x
+
+            for field_name, field_value in line:
+
+                text_surface = font.render(
+                    str(field_value),
+                    True,
+                    (255, 255, 255)
+                )
+
+                field_rect = pygame.Rect(
+                    current_x,
+                    current_y,
+                    text_surface.get_width(),
+                    self.line_height
+                )
+
+                self.field_rects[field_name] = field_rect
+
+                current_x += (
+                    text_surface.get_width()
+                    + self.buffer
+                )
+
+                max_right = max(
+                    max_right,
+                    current_x
+                )
+
+            current_y += self.line_height
+
         self.rect = pygame.Rect(
             screen_x,
             screen_y,
-            self.width,
+            max_right - screen_x,
             len(self.lines) * self.line_height
         )
 
+    # ==================================================================
+    # FIELD HIT TEST
+    # ==================================================================
+
+    def get_field_at(self, mouse_pos):
+
+        for field_name, rect in self.field_rects.items():
+
+            if rect.collidepoint(mouse_pos):
+                return field_name
+
+        return None
+
+    # ==================================================================
+    # LABEL HIT TEST
+    # ==================================================================
+
+    def contains_point(self, mouse_pos):
+
+        return self.rect.collidepoint(mouse_pos)
+
+    # ==================================================================
+    # DRAGGING
+    # ==================================================================
 
     def mouse_down(self, mouse_pos, camera, aircraft):
-        if not self.rect.collidepoint(mouse_pos):
+
+        if not self.contains_point(mouse_pos):
             return False
 
-        # Mouse -> world
         world_x = (
-                          mouse_pos[0] + camera.cam_offset_x
-                  ) / camera.zoom
+            mouse_pos[0] + camera.cam_offset_x
+        ) / camera.zoom
 
         world_y = (
-                      -(mouse_pos[1] + camera.cam_offset_y)
-                  ) / camera.zoom
+            -(mouse_pos[1] + camera.cam_offset_y)
+        ) / camera.zoom
 
         label_x, label_y = self.get_world_position(aircraft)
 
@@ -146,12 +238,12 @@ class Label:
             return
 
         world_x = (
-                          mouse_pos[0] + camera.cam_offset_x
-                  ) / camera.zoom
+            mouse_pos[0] + camera.cam_offset_x
+        ) / camera.zoom
 
         world_y = (
-                      -(mouse_pos[1] + camera.cam_offset_y)
-                  ) / camera.zoom
+            -(mouse_pos[1] + camera.cam_offset_y)
+        ) / camera.zoom
 
         label_x = world_x - self.drag_offset_x
         label_y = world_y - self.drag_offset_y
@@ -160,22 +252,40 @@ class Label:
         self.offset_y = label_y - aircraft.pos_y
 
     def mouse_up(self):
+
         self.dragging = False
+
+    # ==================================================================
+    # LEADER LINE
+    # ==================================================================
 
     def get_connection_point(self, aircraft, camera):
 
-        aircraft_x = world_to_screen_x(aircraft.pos_x, camera.cam_offset_x, camera.zoom)
-        aircraft_y = world_to_screen_y(aircraft.pos_y, camera.cam_offset_y, camera.zoom)
+        aircraft_x = world_to_screen_x(
+            aircraft.pos_x,
+            camera.cam_offset_x,
+            camera.zoom
+        )
+
+        aircraft_y = world_to_screen_y(
+            aircraft.pos_y,
+            camera.cam_offset_y,
+            camera.zoom
+        )
 
         dx = aircraft_x - self.rect.centerx
         dy = aircraft_y - self.rect.centery
 
-        angle = math.degrees(math.atan2(dy, dx))
+        angle = math.degrees(
+            math.atan2(dy, dx)
+        )
+
         angle %= 360
 
         direction = round(angle / 45) % 8
+
         points = {
-            0: (self.rect.right,self.rect.centery),
+            0: (self.rect.right, self.rect.centery),
             1: (self.rect.right, self.rect.bottom),
             2: (self.rect.centerx, self.rect.bottom),
             3: (self.rect.left, self.rect.bottom),
