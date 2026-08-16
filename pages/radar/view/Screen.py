@@ -5,6 +5,7 @@ from pages.radar.data.aircraft_data.AircraftHandler import AircraftHandler
 from pages.radar.data.Airspace import Airspace
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Drawer import Drawer
+from pages.radar.view.menus.GenericWindow import GenericWindow
 from pages.radar.view.menus.MainMenu import MainMenu
 
 
@@ -21,6 +22,7 @@ class Screen:
         self.zoom = 1
         self.drawer = Drawer(self.surface, self.root_directory, self.camera)
         self.main_menu = MainMenu(self.variables.display_width)
+        self.window_list = []
         self.cam_offset_x = 0
         self.cam_offset_y = 0
 
@@ -30,6 +32,7 @@ class Screen:
         self.draw_acft(acft_handler)
         self.draw_qdm()
         self.draw_menus()
+        self.draw_windows()
 
     def fill_bg(self):
         self.surface.fill(self.radar_color_bg)
@@ -57,3 +60,12 @@ class Screen:
     def draw_main_menu(self):
         self.drawer.draw_main_menu(self.main_menu)
 
+    def add_window(self, window: GenericWindow):
+        self.window_list.append(window)
+
+    def draw_windows(self):
+        for window in self.window_list:
+            window.draw(
+                self.surface,
+                self.drawer.font
+            )

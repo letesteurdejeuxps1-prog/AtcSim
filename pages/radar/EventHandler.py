@@ -14,6 +14,7 @@ class EventHandler:
         # Object currently being interacted with
         self.dragging_label = None
         self.dragging_aircraft = None
+        self.dragging_window = None
 
     def handle_event(self, event: pygame.event.Event):
 
@@ -90,7 +91,28 @@ class EventHandler:
 
             self.parent.left_click_on = True
 
-            # Aircraft labels have priority
+            # --------------------------------------------------------------
+            # Windows have highest priority
+            # --------------------------------------------------------------
+
+            for window in reversed(self.parent.screen.window_list):
+
+                if not window.visible:
+                    continue
+
+                if window.mouse_down(mouse_pos):
+                    self.dragging_window = window
+
+                    # Put clicked window on top
+                    self.parent.screen.window_list.remove(window)
+                    self.parent.screen.window_list.append(window)
+
+                    return
+
+            # --------------------------------------------------------------
+            # Aircraft labels
+            # --------------------------------------------------------------
+
             for aircraft in self.parent.aircraft_handler.aircraft_list:
 
                 if aircraft.label.mouse_down(
@@ -102,7 +124,10 @@ class EventHandler:
                     self.dragging_aircraft = aircraft
                     return
 
-            # Nothing on a label -> main menu
+            # --------------------------------------------------------------
+            # Main menu
+            # --------------------------------------------------------------
+
             self.parent.screen.main_menu.mouse_down(mouse_pos)
 
         elif event.button == 2:
@@ -123,13 +148,18 @@ class EventHandler:
 
             self.parent.left_click_on = False
 
-            if self.dragging_label is not None:
+            if self.dragging_window is not None:
+
+                self.dragging_window.mouse_up(mouse_pos)
+
+                self.dragging_window = None
+
+            elif self.dragging_label is not None:
+
                 self.dragging_label.mouse_up()
 
                 self.dragging_label = None
                 self.dragging_aircraft = None
-
-                return
 
             self.parent.screen.main_menu.mouse_up(mouse_pos)
 
@@ -151,11 +181,23 @@ class EventHandler:
         # Menu hover
         self.parent.screen.main_menu.update_mouse(mouse_pos)
 
+        # Window hover
+        for window in self.parent.screen.window_list:
+            window.update_mouse(mouse_pos)
+
+        # Window dragging
+        if self.dragging_window is not None:
+
+            self.dragging_window.mouse_drag(
+                mouse_pos
+            )
+
         # Label dragging
-        if (
+        elif (
                 self.dragging_label is not None
                 and self.dragging_aircraft is not None
         ):
+
             self.dragging_label.mouse_drag(
                 mouse_pos,
                 self.parent.camera,

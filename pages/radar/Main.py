@@ -8,6 +8,7 @@ from pages.radar.data.Airspace import Airspace
 from pages.radar.helpers.Test import Test
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Screen import Screen
+from pages.radar.view.menus.GenericWindow import GenericWindow
 
 
 class Main:
@@ -57,6 +58,15 @@ class Main:
         # TODO: REMOVE FUNCTION AFTER DEBUG
         acfts = self.testing_object.load_acft(self.root_directory, self.airspace.origin_lon, self.airspace.origin_lat)
         self.aircraft_handler.testing_populate_list(acfts)
+        test_window = GenericWindow(
+            400,
+            300,
+            400,
+            250,
+            "Aircraft"
+        )
+
+        self.screen.add_window(test_window)
 
     def init(self):
         pygame.display.set_caption(self.variables.game_caption)
