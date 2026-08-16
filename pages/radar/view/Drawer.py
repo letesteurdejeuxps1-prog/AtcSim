@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 from pages.radar.data.aircraft_data.Aircraft import Aircraft
@@ -9,7 +11,7 @@ from pages.radar.view.menus.MainMenu import MainMenu
 
 
 class Drawer:
-    icon_file_folder = "pages\\radar\\medias"
+    icon_file_folder = os.path.join("pages", "radar", "medias")
     icon_file_format = ".png"
     point_color: str = "W"
     color_default: tuple[int, int, int] = (255, 255, 255)

@@ -1,4 +1,5 @@
 import json
+import os
 
 from pages.radar.data.aircraft_data.Aircraft import Aircraft
 from pages.radar.helpers.conversion_helper import convert_lat_and_long_to_radar, lat_long_to_local
@@ -11,7 +12,7 @@ class Test:
 
     def load_acft(self, root_directory, origin_lon, origin_lat):
         return_data = []
-        file = "{}\\pages\\radar\\debug\\acft.json".format(root_directory)
+        file = os.path.join(root_directory, "pages", "radar", "debug", "acft.json")
         with open(file, 'r') as raw_data:
             data = json.load(raw_data)
             for acft in data["acft"]:

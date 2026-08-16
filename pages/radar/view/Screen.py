@@ -22,7 +22,7 @@ class Screen:
         self.zoom = 1
         self.drawer = Drawer(self.surface, self.root_directory, self.camera)
         self.main_menu = MainMenu(self.variables.display_width)
-        self.window_list = []
+        self.windows = []
         self.cam_offset_x = 0
         self.cam_offset_y = 0
 
@@ -61,10 +61,10 @@ class Screen:
         self.drawer.draw_main_menu(self.main_menu)
 
     def add_window(self, window: GenericWindow):
-        self.window_list.append(window)
+        self.windows.append(window)
 
     def draw_windows(self):
-        for window in self.window_list:
+        for window in self.windows:
             window.draw(
                 self.surface,
                 self.drawer.font

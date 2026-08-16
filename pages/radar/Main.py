@@ -1,3 +1,4 @@
+import os
 import pathlib
 import pygame
 
@@ -100,7 +101,7 @@ class Main:
         pygame.quit()
 
     def load_airspace(self):
-        airspace_file_path = "{}\\{}\\{}".format(
+        airspace_file_path = os.path.join(
             self.path_root,
             self.path_airspace_folder,
             self.path_airspace_file

@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from pygame import Surface
 
@@ -27,23 +29,19 @@ class Point:
 
     def set_image_file(self, root_dir: str, icon_file_folder: str, color: str, icon_file_format: str):
         try:
-            point_img_file = "{}\\{}\\{}_{}{}".format(
+            point_img_file = os.path.join(
                 root_dir,
                 icon_file_folder,
-                self.type_of_point,
-                color,
-                icon_file_format
+                "{}_{}{}".format(self.type_of_point, color, icon_file_format)
             )
             img = pygame.image.load(point_img_file).convert_alpha()
             img = pygame.transform.smoothscale(img, self.icon_size)
             self.pygame_img = img
         except FileNotFoundError:
-            point_img_file = "{}\\{}\\{}_{}{}".format(
+            point_img_file = os.path.join(
                 root_dir,
                 icon_file_folder,
-                self.default_icon,
-                color,
-                icon_file_format
+                "{}_{}{}".format(self.default_icon, color, icon_file_format)
             )
             img = pygame.image.load(point_img_file).convert_alpha()
             img = pygame.transform.smoothscale(img, self.icon_size)
