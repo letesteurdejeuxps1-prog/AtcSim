@@ -192,23 +192,15 @@ class EventHandler:
         # Menu hover
         self.parent.screen.main_menu.update_mouse(mouse_pos)
 
-        # Window hover
-        for window in self.parent.screen.window_list:
-            window.update_mouse(mouse_pos)
-
-        # Window dragging
-        if self.dragging_window is not None:
-
-            self.dragging_window.mouse_drag(
-                mouse_pos
-            )
+        # Aircraft label hover
+        for aircraft in self.parent.aircraft_handler.aircraft_list:
+            aircraft.label.update_hover(mouse_pos)
 
         # Label dragging
-        elif (
+        if (
                 self.dragging_label is not None
                 and self.dragging_aircraft is not None
         ):
-
             self.dragging_label.mouse_drag(
                 mouse_pos,
                 self.parent.camera,
@@ -222,9 +214,6 @@ class EventHandler:
         ):
             self.handle_event_mouse_middle_click_drag(event)
 
-    # ------------------------------------------------------------------
-    # Camera panning
-    # ------------------------------------------------------------------
 
     def handle_event_mouse_middle_click_drag(
             self,

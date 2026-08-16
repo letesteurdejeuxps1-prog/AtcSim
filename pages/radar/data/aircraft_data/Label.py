@@ -24,6 +24,7 @@ class Label:
         # --------------------------------------------------------------
 
         self.dragging = False
+        self.hovered_field = False
         self.drag_offset_x = 0
         self.drag_offset_y = 0
 
@@ -33,6 +34,9 @@ class Label:
 
         self.line_height = 16
         self.buffer = 5
+        self.field_padding_x = 3
+        self.field_padding_y = 1
+        self.field_hover_color = (70, 70, 120)
 
         # --------------------------------------------------------------
         # Data
@@ -158,9 +162,9 @@ class Label:
                 )
 
                 field_rect = pygame.Rect(
-                    current_x,
-                    current_y,
-                    text_surface.get_width(),
+                    current_x - self.field_padding_x,
+                    current_y - self.field_padding_y,
+                    text_surface.get_width() + self.field_padding_x * 2,
                     self.line_height
                 )
 
@@ -296,3 +300,6 @@ class Label:
         }
 
         return points[direction]
+
+    def update_hover(self, mouse_pos):
+        self.hovered_field = self.get_field_at(mouse_pos)

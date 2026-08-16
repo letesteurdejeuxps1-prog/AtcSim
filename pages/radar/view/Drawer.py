@@ -196,8 +196,18 @@ class Drawer:
         for line in label.lines:
 
             for field_name, field_value in line:
+
                 rect = label.field_rects[field_name]
 
+                # Hover background
+                if label.hovered_field == field_name:
+                    pygame.draw.rect(
+                        self.surface,
+                        label.field_hover_color,
+                        rect
+                    )
+
+                # Text
                 text_surface = self.font.render(
                     str(field_value),
                     True,
