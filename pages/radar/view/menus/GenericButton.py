@@ -11,7 +11,8 @@ class GenericButton:
             txt: str,
             width: int = 0,
             height: int = 0,
-            action: Callable[[], None] | None = None
+            action: Callable[[], None] | None = None,
+            arguments=None
     ):
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -36,6 +37,7 @@ class GenericButton:
 
         # Action
         self.action = action
+        self.arguments = arguments
 
         # State
         self.hovered = False
@@ -65,7 +67,7 @@ class GenericButton:
 
     def click(self):
         if self.action is not None:
-            self.action()
+            self.action(self.arguments)
 
     def get_bg_color(self):
         if self.pressed:

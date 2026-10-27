@@ -10,7 +10,8 @@ class ClickableButton(GenericButton):
             txt: str,
             width: int = 0,
             height: int = 0,
-            action=None
+            action=None,
+            arguments=None
     ):
         super().__init__(
             pos_x,
@@ -18,7 +19,8 @@ class ClickableButton(GenericButton):
             txt,
             width,
             height,
-            action
+            action,
+            arguments
         )
 
         self.selected = False
@@ -32,7 +34,7 @@ class ClickableButton(GenericButton):
         self.selected = not self.selected
 
         if self.action is not None:
-            self.action()
+            self.action(self.arguments)
 
     def get_bg_color(self):
 

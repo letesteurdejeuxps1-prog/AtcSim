@@ -44,18 +44,18 @@ class MainMenu:
 
         self.button_list = []
 
-        for txt, button_class, width, action in self.get_buttons_list():
+        for txt, button_class, width, action, arguments in self.get_buttons_list():
             button = button_class(
                 button_x_pos,
                 button_y_pos,
                 txt,
                 width,
                 button_height,
-                action
+                action,
+                arguments
             )
 
             self.button_list.append(button)
-
             button_x_pos += button.width + self.padding_right
 
     def populate_button_list_display_flex(self):
@@ -66,14 +66,15 @@ class MainMenu:
         self.button_list = []
 
         # Create the actual button objects
-        for txt, button_class, width, action in button_definitions:
+        for txt, button_class, width, action, arguments in button_definitions:
             button = button_class(
                 0,
                 self.padding_top,
                 txt,
                 width,
                 button_height,
-                action
+                action,
+                arguments
             )
 
             self.button_list.append(button)
@@ -125,24 +126,96 @@ class MainMenu:
     def get_buttons_list(self):
         return [
             (
-                "Test",
-                GenericButton,
-                150,
-                self.test_button_action_1
+                "A",
+                ClickableButton,
+                50,
+                self.button_action_toggle_mode_a_display,
+                None
             ),
             (
-                "Test 2",
+                "S",
                 ClickableButton,
-                200,
-                self.test_button_action_2
+                50,
+                self.button_action_toggle_mode_s_display,
+                None
+            ),
+            (
+                "V",
+                ClickableButton,
+                50,
+                self.button_action_toggle_mode_v_display,
+                None
+            ),
+            (
+                "Dots",
+                ClickableButton,
+                100,
+                self.button_action_toggle_trails_line,
+                None
+            ),
+            (
+                "0",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                0
+            ),
+            (
+                "1",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                60
+            ),
+            (
+                "2",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                120
+            ),
+            (
+                "3",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                180
+            ),
+            (
+                "4",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                240
+            ),
+            (
+                "5",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                300
+            ),
+            (
+                "10",
+                GenericButton,
+                50,
+                self.button_action_set_prl_length,
+                600
             ),
         ]
 
-    def test_button_action_1(self):
-        self.bg_color = (255, 50, 50)
+    def button_action_toggle_mode_a_display(self, args=None):
+        pass
 
-    def test_button_action_2(self):
-        if self.bg_color == (50, 50, 50):
-            self.bg_color = (100, 100, 100)
-        else:
-            self.bg_color = (50, 50, 50)
+    def button_action_toggle_mode_s_display(self, args=None):
+        pass
+
+    def button_action_toggle_mode_v_display(self, args=None):
+        pass
+
+    def button_action_toggle_trails_line(self, args=None):
+        pass
+
+    def button_action_set_prl_length(self, amount: int = 0):
+        pass
+
