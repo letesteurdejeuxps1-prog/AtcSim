@@ -12,5 +12,10 @@ class AircraftHandler:
         for aircraft in self.aircraft_list:
             aircraft.update_acft(radar_elapsed_time)
 
+    def set_prl_length(self, duration_in_sec: int):
+        for aircraft in self.aircraft_list:
+            aircraft.prl_length_in_sec = duration_in_sec
+            aircraft.prl_end_x, aircraft.prl_end_y = aircraft.update_prl_data()
+
     def testing_populate_list(self, list_of_acft: list[Aircraft]):
         self.aircraft_list = list_of_acft

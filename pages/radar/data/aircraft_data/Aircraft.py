@@ -105,3 +105,7 @@ class Aircraft:
 
     def get_gs_speed_per_sec(self) -> float:
         return self.gs / 3600
+
+    def set_prl_length(self, duration_in_sec: int):
+        self.prl_length_in_sec = duration_in_sec
+        self.prl_end_x, self.prl_end_y = self.update_prl_data()

@@ -7,7 +7,8 @@ from pages.radar.view.menus.GenericButton import GenericButton
 class MainMenu:
     max_height = 150
 
-    def __init__(self, width: int):
+    def __init__(self, width: int, set_prl_length_callback):
+        self.set_prl_length_callback = set_prl_length_callback
         # Positions
         self.pos_x = 0
         self.pos_y = 0
@@ -217,5 +218,7 @@ class MainMenu:
         pass
 
     def button_action_set_prl_length(self, amount: int = 0):
-        pass
+        self.set_prl_length_callback(amount)
+
+
 

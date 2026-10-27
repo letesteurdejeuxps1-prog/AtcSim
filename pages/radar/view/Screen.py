@@ -13,7 +13,7 @@ class Screen:
 
     radar_color_bg: tuple[int, int, int] = (0, 0, 0)
 
-    def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera, variables: Variables):
+    def __init__(self, surface: pygame.Surface, root_directory: str, camera: Camera, variables: Variables, main_menu: MainMenu):
         self.radar_show_navaids_name = True
         self.surface = surface
         self.variables = variables
@@ -21,7 +21,7 @@ class Screen:
         self.camera = camera
         self.zoom = 1
         self.drawer = Drawer(self.surface, self.root_directory, self.camera)
-        self.main_menu = MainMenu(self.variables.display_width)
+        self.main_menu = main_menu
         self.windows = []
         self.cam_offset_x = 0
         self.cam_offset_y = 0

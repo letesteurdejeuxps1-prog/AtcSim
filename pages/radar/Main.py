@@ -10,6 +10,7 @@ from pages.radar.helpers.Test import Test
 from pages.radar.view.Camera import Camera
 from pages.radar.view.Screen import Screen
 from pages.radar.view.menus.GenericWindow import GenericWindow
+from pages.radar.view.menus.MainMenu import MainMenu
 
 
 class Main:
@@ -50,7 +51,8 @@ class Main:
         self.camera = Camera()
         # TODO Remove next line after debug
         self.testing_object = Test()
-        self.screen = Screen(self.main_surface, self.root_directory, self.camera, self.variables)
+        self.main_menu = MainMenu(self.variables.display_width, self.aircraft_handler.set_prl_length)
+        self.screen = Screen(self.main_surface, self.root_directory, self.camera, self.variables, self.main_menu)
 
         # Init function
         self.init()
