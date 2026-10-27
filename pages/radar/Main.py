@@ -51,7 +51,11 @@ class Main:
         self.camera = Camera()
         # TODO Remove next line after debug
         self.testing_object = Test()
-        self.main_menu = MainMenu(self.variables.display_width, self.aircraft_handler.set_prl_length)
+        self.main_menu = MainMenu(
+            self.variables.display_width,
+            self.aircraft_handler.set_prl_length,
+            self.aircraft_handler.mode_to_switch
+        )
         self.screen = Screen(self.main_surface, self.root_directory, self.camera, self.variables, self.main_menu)
 
         # Init function

@@ -45,7 +45,7 @@ class Label:
         self.ssr_display = ""
         self.msg_special = ""
         self.msg_app = ""
-        self.cs = ""
+        self.callsign = ""
         self.next_sector = ""
         self.act_level = ""
         self.climb_descend_maintain = ""
@@ -73,6 +73,10 @@ class Label:
         # Overall label rectangle
         self.rect = pygame.Rect(0, 0, 0, 0)
 
+        self.should_display_mode_a = True
+        self.should_display_mode_s = True
+        self.should_display_mode_v = True
+
     # ==================================================================
     # POSITION
     # ==================================================================
@@ -89,14 +93,37 @@ class Label:
 
     def build_label(self, aircraft):
 
+        if self.should_display_mode_a:
+            ssr_code = ("ssr", str(aircraft.squawk))
+        else:
+            ssr_code = ("ssr", '')
+
+        if self.should_display_mode_s:
+            callsign = ("callsign", aircraft.callsign)
+        else:
+            callsign = ("callsign", '')
+
+        if self.should_display_mode_v:
+            velocity_data = [
+                ("gs", str(aircraft.gs)),
+                ("req_vertical_speed", str(aircraft.rate_of_climb_req)),
+                ("act_vertical_speed", str(aircraft.rate_of_climb_act)),
+            ]
+        else:
+            velocity_data = [
+                ("gs", ''),
+                ("req_vertical_speed", ''),
+                ("act_vertical_speed", ''),
+            ]
+
         self.lines = [
             [
-                ("ssr", str(aircraft.squawk)),
+                ssr_code,
                 ("msg_special", self.msg_special),
                 ("msg_app", self.msg_app),
             ],
             [
-                ("callsign", self.cs),
+                callsign,
                 ("next_sector", self.next_sector),
             ],
             [
@@ -111,11 +138,7 @@ class Label:
                 ("ecl", self.ecl),
                 ("copx", self.copx),
             ],
-            [
-                ("gs", str(aircraft.gs)),
-                ("req_vertical_speed", str(aircraft.rate_of_climb_req)),
-                ("act_vertical_speed", str(aircraft.rate_of_climb_act)),
-            ]
+            velocity_data
         ]
 
     # ==================================================================
@@ -303,3 +326,9 @@ class Label:
 
     def update_hover(self, mouse_pos):
         self.hovered_field = self.get_field_at(mouse_pos)
+
+    def set_modes_to_display_in_label(self, modes: tuple[int, int, int]):
+        mode_a, mode_s, mode_v = modes
+        self.should_display_mode_a = mode_a
+        self.should_display_mode_s = mode_s
+        self.should_display_mode_v = mode_v

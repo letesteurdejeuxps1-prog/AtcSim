@@ -20,13 +20,14 @@ class Aircraft:
         self.pos_y = 0
 
         # Fixed values
+        self.callsign = ""
         self.type = ""
         self.wtc = ""
-        self.squawk = ""
 
         # Changeable values
         self.heading_req = 0
         self.heading_act = 0
+        self.squawk = ""
 
         self.altitude_req = 0
         self.altitude_act = 0

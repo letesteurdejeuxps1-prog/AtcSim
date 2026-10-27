@@ -29,6 +29,7 @@ class Test:
                 )
                 new_acft.pos_x = x
                 new_acft.pos_y = y
+                new_acft.callsign = acft['cs']
                 new_acft.type = acft['type']
                 new_acft.squawk = str(acft['ssr'])
                 new_acft.wtc = 'M'

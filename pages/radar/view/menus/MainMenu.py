@@ -7,8 +7,9 @@ from pages.radar.view.menus.GenericButton import GenericButton
 class MainMenu:
     max_height = 150
 
-    def __init__(self, width: int, set_prl_length_callback):
+    def __init__(self, width: int, set_prl_length_callback, set_label_mode_callback):
         self.set_prl_length_callback = set_prl_length_callback
+        self.set_label_mode_callback = set_label_mode_callback
         # Positions
         self.pos_x = 0
         self.pos_y = 0
@@ -206,13 +207,13 @@ class MainMenu:
         ]
 
     def button_action_toggle_mode_a_display(self, args=None):
-        pass
+        self.set_label_mode_callback('A')
 
     def button_action_toggle_mode_s_display(self, args=None):
-        pass
+        self.set_label_mode_callback('S')
 
     def button_action_toggle_mode_v_display(self, args=None):
-        pass
+        self.set_label_mode_callback('V')
 
     def button_action_toggle_trails_line(self, args=None):
         pass

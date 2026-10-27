@@ -48,7 +48,9 @@ class Screen:
         pass
 
     def draw_acft(self, acft_handler: AircraftHandler):
+        mode_to_display_in_label = acft_handler.get_label_info()
         for acft in acft_handler.aircraft_list:
+            acft.label.set_modes_to_display_in_label(mode_to_display_in_label)
             self.drawer.draw_acft(acft)
 
     def draw_qdm(self):
